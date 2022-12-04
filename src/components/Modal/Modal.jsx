@@ -1,12 +1,17 @@
-import propTypes from 'prop-types';
-
+// import propTypes from 'prop-types';
+import React, { Component } from 'react';
 import css from './Modal.module.css';
 
 
-
-
-{/* <div class="overlay">
-  <div class="modal">
-    <img src="" alt="" />
+export class Modal extends Component {
+  state = {  } 
+  render() { 
+    return (<div className={css.Overlay}>
+  <div className={css.Modal}>
+    <img src="#" alt="" />
   </div>
-</div> */}
+</div> );
+  }
+};
+ 
+
