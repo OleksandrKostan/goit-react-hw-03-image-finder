@@ -32,14 +32,14 @@ export class App extends Component {
   // витягуємо із локал сторедж, розпаршуємо та рендимо збережене
   toggleModal = () => {
     this.setState(({ showModal }) => ({
-      showModal: !showModal
+      showModal: !showModal,
     }));
   };
   render() {
     const { showModal } = this.state;
     return (<> <ThemeProvider theme={theme}> <GlobalStyle />
       <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
-      {showModal && <Modal/>}
+      {showModal && <Modal onClose={this.toggleModal}/>}
     
       
     </ThemeProvider> </>
