@@ -22,7 +22,7 @@ export class App extends Component {
 //       localStorage.setItem('contacts', JSON.stringify(nextContacts));
 //     }
 //   }
-//   // порівнюємо попередній стейт із наступним, та записуємо в локал сторедж
+//  
 //  componentDidMount() {
 //     const contacts = localStorage.getItem('contacts');
 //     const parsedContacts = JSON.parse(contacts);
@@ -30,7 +30,7 @@ export class App extends Component {
 //       this.setState({ contacts: parsedContacts });
 //     }
 //  }
-  // витягуємо із локал сторедж, розпаршуємо та рендимо збережене
+ 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
@@ -41,8 +41,8 @@ export class App extends Component {
     return (<> <ThemeProvider theme={theme}> <GlobalStyle />
       <Searchbar />
       <ImageGallery/>
-      {/* <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
-      {showModal && <Modal onClose={this.toggleModal}/>} */}
+      <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
+      {showModal && <Modal onClose={this.toggleModal}/>}
     
       
       <Button/>
