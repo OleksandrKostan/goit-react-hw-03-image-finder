@@ -1,18 +1,21 @@
-import propTypes from 'prop-types';
-import css from './Searhbar.module.css';
 
-// <header class="searchbar">
-//   <form class="form">
-//     <button type="submit" class="button">
-//       <span class="button-label">Search</span>
-//     </button>
+import css from './Searchbar.module.css';
 
-//     <input
-//       class="input"
-//       type="text"
-//       autocomplete="off"
-//       autofocus
-//       placeholder="Search images and photos"
-//     />
-//   </form>
-// </header>
+export const Searchbar = () => (
+<header  className={css.Searchbar}>
+  <form className={css.SearchForm}>
+    <button type="submit" className={css.SearchForm_button}>
+      <span className={css.SearchForm_button_label}>Search</span>
+    </button>
+
+    <input
+      className={css.SearchForm_input}
+      type="text"
+      autocomplete="off"
+      autofocus
+      placeholder="Search images and photos"
+    />
+  </form>
+</header>
+)
+

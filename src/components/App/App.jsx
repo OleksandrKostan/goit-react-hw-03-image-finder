@@ -4,9 +4,10 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../Styled/Theme';
 import { GlobalStyle } from '../Styled/GlobalStyle';
 import { Modal } from 'components/Modal/Modal';
+import { Searchbar } from 'components/Searchbar/Searchbar';
+import { Button } from 'components/Button/Button';
+import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 
-
-// import css from './App.module.css'; ???
 
 
 
@@ -38,9 +39,13 @@ export class App extends Component {
   render() {
     const { showModal } = this.state;
     return (<> <ThemeProvider theme={theme}> <GlobalStyle />
-      <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
-      {showModal && <Modal onClose={this.toggleModal}/>}
+      <Searchbar />
+      <ImageGallery/>
+      {/* <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
+      {showModal && <Modal onClose={this.toggleModal}/>} */}
     
+      
+      <Button/>
       
     </ThemeProvider> </>
     );

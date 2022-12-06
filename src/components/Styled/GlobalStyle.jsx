@@ -22,15 +22,19 @@ body {
   background-color: #fff;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+    
 }
-/* .App {
- display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 16px;
-  padding-bottom: 24px;
-} */
+
 img {
   display: block;
   max-width: 100%;
   height: auto;
-}`
+}
+`
+// /* #root {
+//   display: grid;
+//   grid-template-columns: 1fr;
+//   grid-gap: 16px;
+//   padding-bottom: 24px;
+// }
+
