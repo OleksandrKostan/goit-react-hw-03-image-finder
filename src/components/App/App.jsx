@@ -1,92 +1,114 @@
 import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
-
+// import { ToastContainer } from 'react-toastify';
  
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../Styled/Theme';
 import { GlobalStyle } from '../Styled/GlobalStyle';
-import { Modal } from 'components/Modal/Modal';
-import { Searchbar } from 'components/Searchbar/Searchbar';
-import { Button } from 'components/Button/Button';
-import { ImageGallery } from 'components/ImageGallery/ImageGallery';
 
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 
+import { Searchbar } from '../Searchbar/Searchbar';
+import { fetchImages } from 'services/Api';
+import { ImageGallery } from '../ImageGallery/ImageGallery';
+import { Button } from '../Button/Button';
+import { Loader } from '../Loader/Loader';
+import { Modal } from '../Modal/Modal';
 
 
 export class App extends Component {
-  state = {
-    query: '',
-    showModal: false,
+ state = {
+    images: [],
+    isLoading: false,
+    currentSearch: '',
     page: 1,
-    images: null,
-    error: null,
-    status: 'idle',
-  };
-  handleFormSubmit = query => {
-    this.setState({ query })
+    modalOpen: false,
+    modalImg: '',
+    modalAlt: '',
   };
 
-  
+  handleSubmit = async e => {
+    e.preventDefault();
+    this.setState({ isLoading: true });
 
-   
-
-  //   if (prevQuery !== currentQuery || prevState.page !== this.state.page) {
-  //     console.log('Изменился query');
-  //     this.setState({ status: 'pending' });
-  //     fetch(
-  //       `https://pixabay.com/api/?q=${currentQuery}}&page=${page}&key=${key}&image_type=photo&orientation=horizontal&per_page=12`
-  //     )
-  //       .then(res => {
-  //         if (res.ok) {
-  //           return res.json();
-  //         }
-  //         return Promise.reject(
-  //           new Error(`По Вашему запросу ${currentQuery} ничего не найдено!`)
-  //         );
-  //       })
-  //       .then(images => this.setState({ images, status: 'resolved' }))
-  //       .catch(error => this.setState({ error, status: 'rejected' }));
-  //   }
-  // }
-  
-  
-  
-//   componentDidUpdate(prevProps, prevState) {
-//     const nextContacts = this.state.contacts;
-//     const prevContacts = prevState.contacts;
-//     if (nextContacts !== prevContacts) {
-//       localStorage.setItem('contacts', JSON.stringify(nextContacts));
-//     }
-//   }
-//  
-//  componentDidMount() {
-//     const contacts = localStorage.getItem('contacts');
-//     const parsedContacts = JSON.parse(contacts);
-//     if (parsedContacts) {
-//       this.setState({ contacts: parsedContacts });
-//     }
-//  }
+    if (e.target.elements.inputForSearch.value.trim() === '') {
+       toast.error('Ведіть поле для пошуку зображення');
+      this.setState({ isLoading: false })
+        return;
+    }
  
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+    const response = await fetchImages(e.target.elements.inputForSearch.value, 1);
+    this.setState({
+      images: response,
+      isLoading: false,
+      currentSearch: e.target.elements.inputForSearch.value,
+      pageNr: 1,
+    });
   };
-  render() {
-   
-    return (<> <ThemeProvider theme={theme}> <GlobalStyle />
-    
-      <Searchbar onSubmit={this.handleFormSubmit} />
-    <ToastContainer/>
-           
-      <ImageGallery query={this.state.query}/>
-      <button type='button' onClick={this.toggleModal}>відкритя модалки</button>
-      {this.state.showModal && <Modal onClose={this.toggleModal}/>}
-    
-      
-      <Button/>
-      
-    </ThemeProvider> </>
+
+  handleClickMore = async () => {
+    const response = await fetchImages(
+      this.state.currentSearch,
+      this.state.page + 1
     );
+    this.setState({
+      images: [...this.state.images, ...response],
+      page: this.state.page + 1,
+    });
+  };
+
+  handleImageClick = e => {
+    this.setState({
+      modalOpen: true,
+      modalAlt: e.target.alt,
+      modalImg: e.target.name,
+    });
+  };
+
+  handleModalClose = () => {
+    this.setState({
+      modalOpen: false,
+      modalImg: '',
+      modalAlt: '',
+    });
+  };
+
+  handleKeyDown = event => {
+    if (event.code === 'Escape') {
+      this.handleModalClose();
+    }
+  };
+
+  async componentDidMount() {
+    window.addEventListener('keydown', this.handleKeyDown);
+  }
+  render() {
+    return ( <ThemeProvider theme={theme}> <GlobalStyle />
+      {
+        this.state.isLoading
+          ? (<Loader />)
+          : (
+          <>
+            <Searchbar onSubmit={this.handleSubmit} /><ToastContainer/>
+            <ImageGallery
+              onImageClick={this.handleImageClick}
+              images={this.state.images}
+              />
+       
+            {this.state.images.length > 0 ? (
+              <Button onClick={this.handleClickMore} />
+            ) : null}
+          </>
+        )}
+        {this.state.modalOpen ? (
+          <Modal
+            src={this.state.modalImg}
+            alt={this.state.modalAlt}
+            handleClose={this.handleModalClose}
+          />
+        ) : null}
+     
+   </ThemeProvider> );
   }
 }
