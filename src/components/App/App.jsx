@@ -16,6 +16,7 @@ import { Loader } from '../Loader/Loader';
 import { Modal } from '../Modal/Modal';
 
 
+
 export class App extends Component {
  state = {
     images: [],
@@ -27,6 +28,10 @@ export class App extends Component {
     Alt: '',
   };
 
+
+
+
+  
   handleSubmit = async e => {
     e.preventDefault();
     this.setState({ isLoading: true });
@@ -107,8 +112,8 @@ export class App extends Component {
               images={images}
               />) : null}
            
-       
-            {images.length > 0 ?   (
+      
+            {images.length > 0  ? (
               <Button onClick={this.handleClickMore} />
             ) : null}
           </>
