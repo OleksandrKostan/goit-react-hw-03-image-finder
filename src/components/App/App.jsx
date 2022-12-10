@@ -25,41 +25,59 @@ export class App extends Component {
     page: 1,
     modal: false,
     Img: '',
-    Alt: '',
+   Alt: '',
+   totalPage: null,
+    
   };
 
+async componentDidUpdate(prevProps, prevState) {
+    const { valueSearch, page, totalPage } = this.state;
+    if (prevState.totalPage !== totalPage || prevState.page !== page) {
+      if (page === totalPage || totalPage === 1) {
+        toast.info('Це всі зображення по запиту');
+      }
+    }
+
+    if (prevState.valueSearch !== valueSearch || prevState.page !== page) {
+      try {
+        this.setState({ isLoading: true });
+        const items = await Fetch(valueSearch, page,);
+        if (items.length === 0) {
+          toast.error('Зображення за пошуком не знайдено');
+          return;
+        }
+        this.setState
+          (state => ({
+         images: [...state.images, ...items],
+         
+          }));
+       
+      } catch (error) {
+        console.warn(error);
+      } finally {
+        this.setState({ isLoading: false });
+      }
+    }
+  };
 
 
 
   
-  handleSubmit = async e => {
+  handleSubmit =  e => {
     e.preventDefault();
-    this.setState({ isLoading: true });
-
     if (e.target.elements.inputForSearch.value.trim() === '') {
        toast.error('Ведіть поле для пошуку зображення');
-      this.setState({ isLoading: false })
         return;
     }
- 
-    const response = await Fetch(e.target.elements.inputForSearch.value, 1);
     this.setState({
-      images: response,
-      isLoading: false,
       valueSearch: e.target.elements.inputForSearch.value,
       page: 1,
+      images: [],
     });
   };
 
-  handleClickMore = async () => {
-    const response = await Fetch(
-      this.state.valueSearch,
-      this.state.page + 1
-    );
-    this.setState({
-      images: [...this.state.images, ...response],
-      page: this.state.page + 1,
-    });
+  handleClickMore =  () => {
+    this.setState(state => ({ page: state.page + 1 }));
   };
 
   handleClickImage = e => {
