@@ -73,41 +73,42 @@ export class App extends Component {
     });
   };
 
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.handleModalClose();
-    } 
-  };
+  // handleKeyDown = e => {
+  //   if (e.code === 'Escape') {
+  //     this.handleModalClose();
+  //   } 
+  // };
 
-handleBackdropClick = e => {
-    if (e.currentTarget === e.target) {
-     this.handleModalClose();
-    }
-  };
- async componentDidMount() {
-   window.addEventListener('keydown', this.handleKeyDown);
+// handleBackdropClick = e => {
+//     if (e.currentTarget === e.target) {
+//      this.handleModalClose();
+//     }
+//   };
+//  async componentDidMount() {
+//    window.addEventListener('keydown', this.handleKeyDown);
 
-  };
+//   };
 
-componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-}
+// componentWillUnmount() {
+//     window.removeEventListener('keydown', this.handleKeyDown);
+// }
 
 
   render() {
     const {isLoading, images,  modal, Img, Alt} = this.state;
-    return ( <ThemeProvider theme={theme}> <GlobalStyle />
+    return (<ThemeProvider theme={theme}> <GlobalStyle />
+       <Searchbar onSubmit={this.handleSubmit} /><ToastContainer />
       {isLoading
           ? (<Loader />)
           : (
           <>
-            <Searchbar onSubmit={this.handleSubmit} /><ToastContainer />
-            <ImageGallery
+           {images.length > 0 ? (<ImageGallery
               onClick={this.handleClickImage}
               images={images}
-              />
+              />) : null}
+           
        
-            {images.length > 0 ? (
+            {images.length > 0 ?   (
               <Button onClick={this.handleClickMore} />
             ) : null}
           </>
@@ -116,7 +117,7 @@ componentWillUnmount() {
           <Modal
             src={Img}
             alt={Alt}
-            handleClose={this.handleBackdropClick}
+            handleModalClose={this.handleModalClose}
           />
         ) : null}
    </ThemeProvider> );
