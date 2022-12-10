@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import { ToastContainer } from 'react-toastify';
  
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../Styled/Theme';
@@ -7,10 +6,10 @@ import { GlobalStyle } from '../Styled/GlobalStyle';
 
 import { ToastContainer } from 'react-toastify';
 import { toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { Searchbar } from '../Searchbar/Searchbar';
-import { fetchImages } from 'services/Api';
+import { Fetch } from 'services/Api';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { Button } from '../Button/Button';
 import { Loader } from '../Loader/Loader';
@@ -21,11 +20,11 @@ export class App extends Component {
  state = {
     images: [],
     isLoading: false,
-    currentSearch: '',
+    valueSearch: '',
     page: 1,
-    modalOpen: false,
-    modalImg: '',
-    modalAlt: '',
+    modal: false,
+    Img: '',
+    Alt: '',
   };
 
   handleSubmit = async e => {
@@ -38,18 +37,18 @@ export class App extends Component {
         return;
     }
  
-    const response = await fetchImages(e.target.elements.inputForSearch.value, 1);
+    const response = await Fetch(e.target.elements.inputForSearch.value, 1);
     this.setState({
       images: response,
       isLoading: false,
-      currentSearch: e.target.elements.inputForSearch.value,
-      pageNr: 1,
+      valueSearch: e.target.elements.inputForSearch.value,
+      page: 1,
     });
   };
 
   handleClickMore = async () => {
-    const response = await fetchImages(
-      this.state.currentSearch,
+    const response = await Fetch(
+      this.state.valueSearch,
       this.state.page + 1
     );
     this.setState({
@@ -58,57 +57,61 @@ export class App extends Component {
     });
   };
 
-  handleImageClick = e => {
+  handleClickImage = e => {
     this.setState({
-      modalOpen: true,
-      modalAlt: e.target.alt,
-      modalImg: e.target.name,
+      modal: true,
+      Alt: e.target.alt,
+      Img: e.target.name,
     });
   };
 
   handleModalClose = () => {
     this.setState({
-      modalOpen: false,
-      modalImg: '',
-      modalAlt: '',
+      modal: false,
+      Img: '',
+      Alt: '',
     });
   };
 
-  handleKeyDown = event => {
-    if (event.code === 'Escape') {
+  handleKeyDown = e => {
+    if (e.code === 'Escape') {
       this.handleModalClose();
+     
     }
   };
 
-  async componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
+ async componentDidMount() {
+   window.addEventListener('keydown', this.handleKeyDown);
+   
   }
+
+
+
   render() {
+    const {isLoading, images,  modal, Img, Alt} = this.state;
     return ( <ThemeProvider theme={theme}> <GlobalStyle />
-      {
-        this.state.isLoading
+      {isLoading
           ? (<Loader />)
           : (
           <>
             <Searchbar onSubmit={this.handleSubmit} /><ToastContainer/>
             <ImageGallery
-              onImageClick={this.handleImageClick}
-              images={this.state.images}
+              onClick={this.handleClickImage}
+              images={images}
               />
        
-            {this.state.images.length > 0 ? (
+            {images.length > 0 ? (
               <Button onClick={this.handleClickMore} />
             ) : null}
           </>
         )}
-        {this.state.modalOpen ? (
+        {modal ? (
           <Modal
-            src={this.state.modalImg}
-            alt={this.state.modalAlt}
+            src={Img}
+            alt={Alt}
             handleClose={this.handleModalClose}
           />
         ) : null}
-     
    </ThemeProvider> );
   }
 }
