@@ -76,15 +76,22 @@ export class App extends Component {
   handleKeyDown = e => {
     if (e.code === 'Escape') {
       this.handleModalClose();
-     
-    }
+    } 
   };
 
+handleBackdropClick = e => {
+    if (e.currentTarget === e.target) {
+     this.handleModalClose();
+    }
+  };
  async componentDidMount() {
    window.addEventListener('keydown', this.handleKeyDown);
-   
-  }
 
+  };
+
+componentWillUnmount() {
+    window.removeEventListener('keydown', this.handleKeyDown);
+}
 
 
   render() {
@@ -109,7 +116,7 @@ export class App extends Component {
           <Modal
             src={Img}
             alt={Alt}
-            handleClose={this.handleModalClose}
+            handleClose={this.handleBackdropClick}
           />
         ) : null}
    </ThemeProvider> );
