@@ -94,7 +94,7 @@ export class App extends Component {
           ? (<Loader />)
           : (
           <>
-            <Searchbar onSubmit={this.handleSubmit} /><ToastContainer/>
+            <Searchbar onSubmit={this.handleSubmit} /><ToastContainer />
             <ImageGallery
               onClick={this.handleClickImage}
               images={images}
