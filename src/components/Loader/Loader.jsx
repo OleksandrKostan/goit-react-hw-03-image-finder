@@ -4,10 +4,10 @@ import css from './Loader.module.css';
 export const Loader = () => (
   <div className={css.loader}>
     <ThreeDots 
-height="80" 
-width="80" 
+height="100" 
+width="100" 
 radius="9"
-color="#4fa94d" 
+color="#2c2cb7" 
 ariaLabel="three-dots-loading"
 wrapperStyle={{}}
 wrapperClassName=""

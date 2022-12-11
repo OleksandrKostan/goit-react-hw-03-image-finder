@@ -26,58 +26,46 @@ export class App extends Component {
     modal: false,
     Img: '',
    Alt: '',
-   totalPage: null,
+   
     
   };
-
-async componentDidUpdate(prevProps, prevState) {
-    const { valueSearch, page, totalPage } = this.state;
-    if (prevState.totalPage !== totalPage || prevState.page !== page) {
-      if (page === totalPage || totalPage === 1) {
-        toast.info('Це всі зображення по запиту');
-      }
-    }
-
+ 
+async componentDidUpdate(_, prevState) {
+  const { valueSearch, page } = this.state;
     if (prevState.valueSearch !== valueSearch || prevState.page !== page) {
       try {
-        this.setState({ isLoading: true });
-        const items = await Fetch(valueSearch, page,);
-        if (items.length === 0) {
-          toast.error('Зображення за пошуком не знайдено');
-          return;
+        if (valueSearch !== '') {
+          this.setState({isLoading: true });
+          const searchImages = await Fetch(valueSearch, page);
+          if (searchImages.length === 0) {
+            toast.error(`Вибачте, по вашому запиту нічого не знайдено ;( `);
+          }
+          this.setState(({ images }) => {
+            return {
+              images: [...images, ...searchImages],
+            };
+            
+          });
         }
-        this.setState
-          (state => ({
-         images: [...state.images, ...items],
-         
-          }));
-       
       } catch (error) {
-        console.warn(error);
+        toast.error( `${error.message}`);
       } finally {
         this.setState({ isLoading: false });
       }
     }
-  };
+  }
 
 
-
-  
-  handleSubmit =  e => {
-    e.preventDefault();
-    if (e.target.elements.inputForSearch.value.trim() === '') {
-       toast.error('Ведіть поле для пошуку зображення');
-        return;
-    }
+  handleSubmit = valueSearch => {
     this.setState({
-      valueSearch: e.target.elements.inputForSearch.value,
-      page: 1,
       images: [],
+      page: 1,
+      valueSearch,
     });
   };
 
-  handleClickMore =  () => {
-    this.setState(state => ({ page: state.page + 1 }));
+  handleClickMore = () => {
+    this.setState(prevState  => ({ page: prevState.page + 1 }));
   };
 
   handleClickImage = e => {
@@ -120,24 +108,13 @@ async componentDidUpdate(prevProps, prevState) {
   render() {
     const {isLoading, images,  modal, Img, Alt} = this.state;
     return (<ThemeProvider theme={theme}> <GlobalStyle />
-       <Searchbar onSubmit={this.handleSubmit} /><ToastContainer />
-      {isLoading
-          ? (<Loader />)
-          : (
-          <>
-           {images.length > 0 ? (<ImageGallery
-              onClick={this.handleClickImage}
-              images={images}
-              />) : null}
-           
-      
-            {images.length > 0  ? (
-              <Button onClick={this.handleClickMore} />
-            ) : null}
-          </>
-        )}
-        {modal ? (
-          <Modal
+      <Searchbar onSubmit={this.handleSubmit} /><ToastContainer />
+    
+        {images.length > 0 &&  <ImageGallery onClick={this.handleClickImage}
+        images={images} />}
+       {isLoading && <Loader />}
+        {images.length > 0 && <Button onClick={this.handleClickMore}  />}
+        {modal ? ( <Modal
             src={Img}
             alt={Alt}
             handleModalClose={this.handleModalClose}
